@@ -57,6 +57,4 @@
   - `일반 투구들 (NormalPitches)`
   - `마지막 투구들 (FinalPitches)`
 - `프레임 (Frame)`
-  - `일반 프레임 (NormalFrame)`
-  - `마지막 프레임 (FinalFrame)`
 - `볼링 (Bowling)`
