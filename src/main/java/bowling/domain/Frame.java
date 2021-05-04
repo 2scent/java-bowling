@@ -42,4 +42,8 @@ public final class Frame {
 
         return new Frame(nextIndex, NormalPitches.init());
     }
+
+    public int index() {
+        return index;
+    }
 }
