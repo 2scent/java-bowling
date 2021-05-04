@@ -1,5 +1,7 @@
 package bowling.domain;
 
+import java.util.Objects;
+
 public final class Pitch {
     private static final int MIN_KNOCKED_PINS_COUNT = 0;
     private static final int MAX_KNOCKED_PINS_COUNT = 10;
@@ -22,5 +24,18 @@ public final class Pitch {
 
     public int knockedPinsCount() {
         return knockedPinsCount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pitch pitch = (Pitch) o;
+        return knockedPinsCount == pitch.knockedPinsCount;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(knockedPinsCount);
     }
 }
