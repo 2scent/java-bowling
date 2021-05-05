@@ -15,25 +15,36 @@ public final class Bowling {
     public static Bowling from(final PinsInput pinsInput, final FramesOutput framesOutput) {
         final List<Frame> frames = new ArrayList<>();
 
-        Frame frame = Frame.first();
+        framesOutput.print(frames);
 
-        while (!frame.last() || frame.playing()) {
+        Frame frame = Frame.first();
+        frame = initBody(pinsInput, framesOutput, frames, frame);
+        initLast(pinsInput, framesOutput, frames, frame);
+
+        return new Bowling(frames);
+    }
+    
+    private static Frame initBody(PinsInput pinsInput, FramesOutput framesOutput, List<Frame> frames, Frame frame) {
+        while (!frame.last()) {
             frame = playedFrame(pinsInput, framesOutput, frames, frame);
             frames.add(frame);
             frame = frame.next();
         }
+        return frame;
+    }
 
-        return new Bowling(frames);
+    private static void initLast(PinsInput pinsInput, FramesOutput framesOutput, List<Frame> frames, Frame frame) {
+        frames.add(playedFrame(pinsInput, framesOutput, frames, frame));
     }
 
     private static Frame playedFrame(PinsInput pinsInput, FramesOutput framesOutput, List<Frame> frames, Frame frame) {
         while (frame.playing()) {
+            frame = frame.play(new Pitch(pinsInput.knockedPins(frame.index())));
+
             framesOutput.print(
                     Stream.concat(frames.stream(), Stream.of(frame))
                             .collect(Collectors.toList())
             );
-
-            frame = frame.play(new Pitch(pinsInput.knockedPins(frame.index())));
         }
 
         return frame;
