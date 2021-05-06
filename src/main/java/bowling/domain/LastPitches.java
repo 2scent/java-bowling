@@ -1,9 +1,7 @@
 package bowling.domain;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Consumer;
 
 public final class LastPitches extends Pitches {
     private static final int MAX_PITCHES_COUNT = 3;
@@ -11,8 +9,6 @@ public final class LastPitches extends Pitches {
             String.format("pitches.size()는 %d 이하여야 합니다.", MAX_PITCHES_COUNT);
     private static final int STRIKE_PINS_COUNT = 10;
     private static final String WRONG_KNOCKED_PINS_COUNT_MESSAGE = "쓰러뜨린 핀의 개수가 올바르지 않습니다.";
-
-    private final List<Pitch> pitches;
 
     private LastPitches(final List<Pitch> pitches) {
         if (pitches.size() > MAX_PITCHES_COUNT) {
@@ -89,5 +85,20 @@ public final class LastPitches extends Pitches {
     @Override
     public int hashCode() {
         return Objects.hash(pitches);
+    }
+
+    @Override
+    public Iterator<Pitch> iterator() {
+        return pitches.iterator();
+    }
+
+    @Override
+    public void forEach(Consumer<? super Pitch> action) {
+        pitches.forEach(action);
+    }
+
+    @Override
+    public Spliterator<Pitch> spliterator() {
+        return pitches.spliterator();
     }
 }

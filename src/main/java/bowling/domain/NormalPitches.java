@@ -1,8 +1,7 @@
 package bowling.domain;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Consumer;
 
 public final class NormalPitches extends Pitches {
     private static final int MAX_PITCHES_COUNT = 2;
@@ -11,8 +10,6 @@ public final class NormalPitches extends Pitches {
     private static final int MAX_KNOCKED_PINS_COUNT = 10;
     private static final String OVER_MAX_KNOCKED_PINS_COUNT_MASSAGE =
             String.format("모든 투구들의 넘어뜨린 핀 개수의 합은 %d 이하여야 합니다.", MAX_KNOCKED_PINS_COUNT);
-
-    private final List<Pitch> pitches;
 
     private NormalPitches(final List<Pitch> pitches) {
         if (pitches.size() > MAX_PITCHES_COUNT) {
@@ -51,5 +48,20 @@ public final class NormalPitches extends Pitches {
     @Override
     public int hashCode() {
         return Objects.hash(pitches);
+    }
+
+    @Override
+    public Iterator<Pitch> iterator() {
+        return pitches.iterator();
+    }
+
+    @Override
+    public void forEach(Consumer<? super Pitch> action) {
+        pitches.forEach(action);
+    }
+
+    @Override
+    public Spliterator<Pitch> spliterator() {
+        return pitches.spliterator();
     }
 }

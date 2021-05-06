@@ -23,7 +23,7 @@ public final class Bowling {
 
         return new Bowling(frames);
     }
-    
+
     private static Frame initBody(PinsInput pinsInput, FramesOutput framesOutput, List<Frame> frames, Frame frame) {
         while (!frame.last()) {
             frame = playedFrame(pinsInput, framesOutput, frames, frame);

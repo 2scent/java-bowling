@@ -1,5 +1,7 @@
 package bowling.domain;
 
+import java.util.List;
+
 public final class Frame {
     private static final int FIRST_FRAME_INDEX = 1;
     private static final int LAST_FRAME_INDEX = 10;
@@ -45,5 +47,9 @@ public final class Frame {
 
     public int index() {
         return index;
+    }
+
+    public Pitches pitches() {
+        return pitches;
     }
 }
