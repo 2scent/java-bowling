@@ -20,6 +20,7 @@ public class OutputView {
     public static void print(final Player player, final Bowling bowling) {
         printTitle();
         print(player, bowling.frames());
+        printScore(bowling.frames());
         System.out.println();
     }
 
@@ -80,5 +81,38 @@ public class OutputView {
 
     private static String withDivider(final List<String> views) {
         return DEFAULT_DIVIDER + String.join(DEFAULT_DIVIDER, views) + DEFAULT_DIVIDER;
+    }
+
+    private static void printScore(List<Frame> frames) {
+        final List<String> views = new ArrayList<>();
+
+        final List<Frame> calculableFrames = frames.stream()
+                .filter(e -> e.calculableScore(frames))
+                .collect(Collectors.toList());
+
+        int score = 0;
+
+        views.add(StringUtil.center("", DEFAULT_LENGTH));
+
+
+        for (Frame frame  : calculableFrames) {
+            score += frame.score(frames);
+            views.add(StringUtil.center(String.join(DEFAULT_DIVIDER, String.valueOf(score)), DEFAULT_LENGTH));
+        }
+
+//        views.addAll(
+//                calculableFrames.stream()
+//                        .map(e -> StringUtil.center(String.join(DEFAULT_DIVIDER, String.valueOf(e.score(frames))), DEFAULT_LENGTH))
+//                        .collect(Collectors.toList())
+//        );
+
+
+        views.addAll(
+                IntStream.rangeClosed(1, 10 - calculableFrames.size())
+                        .mapToObj(i -> StringUtil.center("", DEFAULT_LENGTH))
+                        .collect(Collectors.toList())
+        );
+
+        System.out.println(withDivider(views));
     }
 }

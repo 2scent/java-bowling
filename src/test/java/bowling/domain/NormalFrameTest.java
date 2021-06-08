@@ -2,6 +2,9 @@ package bowling.domain;
 
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
@@ -66,5 +69,63 @@ public class NormalFrameTest {
         final Frame last = NormalFrame.init().last();
 
         assertThat(last).isInstanceOf(FinalFrame.class);
+    }
+
+    @Test
+    public void calculableScore1() {
+        Frame frame = NormalFrame.init();
+        assertThat(frame.calculableScore(Collections.singletonList(frame))).isFalse();
+
+        frame = frame.play(7);
+        assertThat(frame.calculableScore(Collections.singletonList(frame))).isFalse();
+
+        frame = frame.play(2);
+        assertThat(frame.calculableScore(Collections.singletonList(frame))).isTrue();
+    }
+
+    @Test
+    public void calculableScore2() {
+        Frame frame = NormalFrame.init();
+        assertThat(frame.calculableScore(Collections.singletonList(frame))).isFalse();
+
+        frame = frame.play(7);
+        assertThat(frame.calculableScore(Collections.singletonList(frame))).isFalse();
+
+        frame = frame.play(3);
+        assertThat(frame.calculableScore(Collections.singletonList(frame))).isFalse();
+
+        Frame next = frame.next();
+        assertThat(frame.calculableScore(Arrays.asList(frame, next))).isFalse();
+
+        next = next.play(5);
+        assertThat(frame.calculableScore(Arrays.asList(frame, next))).isTrue();
+    }
+
+
+    @Test
+    public void calculableScore3() {
+        Frame frame = NormalFrame.init();
+        assertThat(frame.calculableScore(Collections.singletonList(frame))).isFalse();
+
+        frame = frame.play(10);
+        assertThat(frame.calculableScore(Collections.singletonList(frame))).isFalse();
+
+        Frame next = frame.next();
+        assertThat(frame.calculableScore(Arrays.asList(frame, next))).isFalse();
+
+        next = next.play(5);
+        assertThat(frame.calculableScore(Arrays.asList(frame, next))).isFalse();
+
+        next = next.play(5);
+        assertThat(frame.calculableScore(Arrays.asList(frame, next))).isTrue();
+    }
+
+    @Test
+    public void score1() {
+        Frame frame = NormalFrame.init();
+        frame = frame.play(7);
+        frame = frame.play(2);
+
+        assertThat(frame.score(null)).isEqualTo(9);
     }
 }

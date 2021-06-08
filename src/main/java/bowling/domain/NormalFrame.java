@@ -52,4 +52,74 @@ public final class NormalFrame extends DefaultFrame {
     protected int maxPitchesCount() {
         return 2;
     }
+
+    @Override
+    public boolean calculableScore(List<Frame> frames) {
+        return getScore(frames).calculable();
+    }
+
+    @Override
+    public int score(List<Frame> frames) {
+        return getScore(frames).score();
+    }
+
+    private Score getScore(List<Frame> frames) {
+        Score score;
+
+        if (isFirstStrike()) {
+            score = new Score(10, 2);
+        } else if (isSecondSpare()) {
+            score = new Score(10, 1);
+        } else {
+            score = new Score(
+                    pitches().stream()
+                            .map(Pitch::knockedPins)
+                            .map(KnockedPins::count)
+                            .reduce(0, Integer::sum),
+                    maxPitchesCount() - pitches().size()
+            );
+        }
+
+        if (score.calculable()) {
+            return score;
+        }
+
+        Frame nextFrame = nextFrame(frames);
+
+        if (nextFrame != null) {
+            return nextFrame.calculateAdditionalScore(score, frames);
+        }
+
+        return score;
+    }
+
+    @Override
+    public Score calculateAdditionalScore(Score beforeScore, List<Frame> frames) {
+        for (Pitch pitch : pitches()) {
+            if (beforeScore.calculable()) {
+                break;
+            }
+            beforeScore = beforeScore.bowl(pitch.knockedPins().count());
+        }
+
+        if (beforeScore.calculable()) {
+            return beforeScore;
+        }
+
+        Frame nextFrame = nextFrame(frames);
+
+        if (nextFrame != null) {
+            return nextFrame.calculateAdditionalScore(beforeScore, frames);
+        }
+
+        return beforeScore;
+    }
+
+    private Frame nextFrame(List<Frame> frames) {
+        try {
+            return frames.get(frames.indexOf(this) + 1);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

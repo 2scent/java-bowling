@@ -14,4 +14,10 @@ public interface Frame {
     Frame last();
 
     List<Pitch> pitches();
+
+    boolean calculableScore(List<Frame> frames);
+
+    int score(List<Frame> frames);
+
+    Score calculateAdditionalScore(Score beforeScore, List<Frame> frames);
 }

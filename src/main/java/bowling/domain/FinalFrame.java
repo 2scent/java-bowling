@@ -53,4 +53,29 @@ public final class FinalFrame extends DefaultFrame {
     protected int maxPitchesCount() {
         return 3;
     }
+
+    @Override
+    public boolean calculableScore(List<Frame> frames) {
+        return !playing();
+    }
+
+    @Override
+    public int score(List<Frame> frames) {
+        return pitches().stream()
+                .map(Pitch::knockedPins)
+                .map(KnockedPins::count)
+                .reduce(0, Integer::sum);
+    }
+
+    @Override
+    public Score calculateAdditionalScore(Score beforeScore, List<Frame> frames) {
+        for (Pitch pitch : pitches()) {
+            if (beforeScore.calculable()) {
+                break;
+            }
+            beforeScore = beforeScore.bowl(pitch.knockedPins().count());
+        }
+
+        return beforeScore;
+    }
 }
