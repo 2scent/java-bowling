@@ -23,6 +23,11 @@ public final class Bowling {
         return frames.size() < MAX_FRAMES_COUNT || frames.get(FINAL_FRAME_INDEX).playing();
     }
 
+    public boolean playingFrame(int i) {
+        System.out.println(i);
+        return frames.size() == i && frames.get(i - 1).playing();
+    }
+
     public Bowling play(final int knockedPinsCount) {
         return play(KnockedPins.from(knockedPinsCount));
     }
