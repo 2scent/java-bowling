@@ -17,10 +17,20 @@ public class OutputView {
     private static final String SPARE_VIEW = "/";
     private static final String GUTTER_VIEW = "-";
 
-    public static void print(final Player player, final Bowling bowling) {
+    public static void print(Bowling bowling) {
         printTitle();
-        printFrames(player, bowling.frames());
-        printScores(bowling.frames());
+        for (Player player : bowling.players()) {
+            printFrames(player, player.frames());
+            printScores(player.frames());
+        }
+
+        System.out.println();
+    }
+
+    public static void print(final Player player, final Game game) {
+        printTitle();
+        printFrames(player, game.frames());
+        printScores(game.frames());
         System.out.println();
     }
 
@@ -94,7 +104,7 @@ public class OutputView {
 
         views.add(StringUtil.center("", DEFAULT_LENGTH));
 
-        for (Frame frame  : calculableFrames) {
+        for (Frame frame : calculableFrames) {
             totalScore += frame.score(frames).score();
             views.add(StringUtil.center(String.join(DEFAULT_DIVIDER, String.valueOf(totalScore)), DEFAULT_LENGTH));
         }

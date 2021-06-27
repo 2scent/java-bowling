@@ -1,71 +1,60 @@
 package bowling.domain;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public final class Bowling {
-    private static final int MAX_FRAMES_COUNT = 10;
-    private static final int FINAL_FRAME_INDEX = MAX_FRAMES_COUNT - 1;
-    private static final String WRONG_PLAY_MESSAGE = "playing()이 true가 아닐 때는 play()를 호출할 수 없습니다.";
+public class Bowling {
+    final List<Player> players;
 
-    private final List<Frame> frames;
+    final int currentFrame;
 
-    private Bowling(final List<Frame> frames) {
-        this.frames = frames;
+    public Bowling(List<Player> players) {
+        this(players, 1);
     }
 
-    public static Bowling init() {
-        return new Bowling(Collections.singletonList(NormalFrame.init()));
+    private Bowling(List<Player> players, int currentFrame) {
+        this.players = players;
+        this.currentFrame = currentFrame;
     }
 
     public boolean playing() {
-        return frames.size() < MAX_FRAMES_COUNT || frames.get(FINAL_FRAME_INDEX).playing();
+        return players.stream()
+                .anyMatch(Player::playing);
     }
 
-    public Bowling play(final int knockedPinsCount) {
-        return play(KnockedPins.from(knockedPinsCount));
+    public Player currentPlayer() {
+        System.out.println(currentFrame);
+
+        Player currentPlayer = players.stream()
+                .filter(player -> player.isCurrentFrame(currentFrame))
+                .filter(player -> player.playingFrame(currentFrame - 1))
+                .findFirst()
+                .orElse(null);
+
+        if (currentPlayer != null) return currentPlayer;
+
+        currentPlayer = players.stream()
+                .filter(player -> player.isBeforeFrame(currentFrame))
+                .findFirst()
+                .orElse(null);
+
+        return currentPlayer;
     }
 
-    public Bowling play(final KnockedPins knockedPins) {
-        validatePlaying();
+    public Bowling play(int knockedPinsCount) {
+        final List<Player> newPlayers = players.stream()
+                .map(player -> player.equals(currentPlayer()) ? player.play(knockedPinsCount) : player)
+                .collect(Collectors.toList());
 
-        final List<Frame> frames = new ArrayList<>(this.frames);
-        final Frame lastFrame = frames.get(frames.size() - 1);
-
-        if (lastFrame.playing()) {
-            frames.remove(lastFrame);
-        }
-
-        final Frame playedFrame = nextFrame(frames, lastFrame).play(knockedPins);
-        frames.add(playedFrame);
-
-        return new Bowling(frames);
+        return new Bowling(
+                newPlayers,
+                newPlayers.stream()
+                        .anyMatch(player -> (player.isCurrentFrame(currentFrame) && player.playingFrame(currentFrame - 1)) || player.isBeforeFrame(currentFrame)) ? currentFrame : currentFrame + 1
+        );
     }
 
-    private void validatePlaying() {
-        if (!playing()) {
-            throw new IllegalStateException(WRONG_PLAY_MESSAGE);
-        }
-    }
-
-    private Frame nextFrame(final List<Frame> frames, final Frame frame) {
-        if (frame.playing()) {
-            return frame;
-        }
-
-        if (frames.size() < FINAL_FRAME_INDEX) {
-            return frame.next();
-        }
-
-        return frame.last();
-    }
-
-    public List<Frame> frames() {
-        return Collections.unmodifiableList(frames);
-    }
-
-    public int currentFrameIndex() {
-        return frames.size();
+    public List<Player> players() {
+        return Collections.unmodifiableList(players);
     }
 }

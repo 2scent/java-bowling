@@ -4,16 +4,16 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.*;
 
-public class BowlingTest {
+public class GameTest {
     @Test
     public void init() {
-        final Bowling bowling = Bowling.init();
+        final Game bowling = Game.init();
         assertThat(bowling.playing()).isTrue();
     }
 
     @Test
     public void play() {
-        Bowling bowling = Bowling.init();
+        Game bowling = Game.init();
 
         while (bowling.playing()) {
             bowling = bowling.play(10);
@@ -26,7 +26,7 @@ public class BowlingTest {
     @Test
     public void play_invalid() {
         assertThatIllegalStateException().isThrownBy(() -> {
-            Bowling bowling = Bowling.init();
+            Game bowling = Game.init();
 
             while (bowling.playing()) {
                 bowling = bowling.play(10);
